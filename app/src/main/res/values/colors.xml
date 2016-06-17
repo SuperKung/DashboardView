@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="GREEN">#FF00FF00</color>
+    <color name="RED">#FFFF0000</color>
+    <color name="PointerColor">#C9DEEE</color>
+    <color name="Yellow">#FFFFFF00</color>
+
+    <color name="series_not_end">#fffec500</color>
+    <color name="sienna">#ffa0522d</color>
+    <color name="silver">#ffc0c0c0</color>
+    <color name="skyblue">#ff87ceeb</color>
+    <color name="slateblue">#ff6a5acd</color>
+    <color name="slategray">#ff708090</color>
+    <color name="slategrey">#ff708090</color>
+    <color name="textColor">#666666</color>
+    <color name="shadow">#dfdfdf</color>
+    <color name="leftRight">#e1dcd6</color>
+    <color name="rightRight">#f4efe9</color>
+    <color name="outsideBlue">#2690f8</color>
+    <color name="insideBlue">#58ade5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="insideCircle">#c2b9b0</color>
+</resources>

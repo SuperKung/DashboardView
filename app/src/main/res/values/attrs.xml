@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="DashboardView">
+        <attr name="arcColor" format="color"/>
+        <attr name="padding" format="dimension"/>
+        <!--<attr name="progressHeight" format="dimension"/>-->
+        <attr name="android:text"/>
+        <attr name="tikeCount" format="integer"/>
+        <attr name="Unit" format="string"/>
+        <attr name="android:textSize"/>
+        <attr name="backgroundColor" format="color" />
+        <attr name="textColor" format="color"/>
+        <attr name="startProgressColor" format="color" />
+        <attr name="endProgressColor" format="color" />
+        <attr name="startNumber" format="integer" />
+        <attr name="maxNumber" format="integer" />
+        <attr name="progressColor" format="color"/>
+    </declare-styleable>
+
+</resources>
