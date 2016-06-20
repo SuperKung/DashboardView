@@ -42,4 +42,4 @@ setStartNum(float startNum);
 setMaxNum(float startNum);
 ```
 
-[该篇文章相关博客](http://blog.csdn.net/qq_17422503)  
+[该控件相关博客](http://blog.csdn.net/qq_17422503)  
