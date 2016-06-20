@@ -41,3 +41,5 @@ setEndColor(int endColor);//如果设置了起始颜色和结束颜色，进度�
 setStartNum(float startNum);
 setMaxNum(float startNum);
 ```
+
+[该篇文章相关博客](http://blog.csdn.net/qq_17422503)  
