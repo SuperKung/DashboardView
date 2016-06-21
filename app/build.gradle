@@ -1,10 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.3"
     defaultConfig {
-        applicationId "com.anderson.dashboardview"
         minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
@@ -17,11 +17,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
+publish {
+    userOrg = 'superkung'
+    groupId = 'com.superkung'
+    artifactId = 'dashboard-view'
+    publishVersion = '1.1.0'
+    desc = 'Oh hi, this is a nice description for a project, right?'
+    website = 'https://github.com/SuperKung'
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
     testCompile 'junit:junit:4.12'
 }
