@@ -1,14 +1,16 @@
 # DashboardView
 Android 自定义View 仪表盘
 
-##使用
+![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/dashboard-view.gif)
 
-###gradle中
+##HOW TO USE
+
+###gradle
 
 ```Groovy
 compile 'com.superkung:dashboard-view:1.1.0'
 ```
-###xml中
+###xml
 ```xml
 <com.anderson.dashboardview.view.DashboardView
         android:layout_width="wrap_content"
@@ -17,7 +19,7 @@ compile 'com.superkung:dashboard-view:1.1.0'
         android:text="当前速度"
         app:Unit="m/s"/>
 ```
-    更多可选属性
+    more
 ```xml
   app:startNumber
   app:maxNumber
@@ -26,7 +28,7 @@ compile 'com.superkung:dashboard-view:1.1.0'
   app:startProgressColor
   app:endProgressColor
 ```
-###java代码中
+###java
 ```java
 setPercent(int percent);//核心方法，percent = 1~100
 //以下方法都可有可无，如果在xml中设置了则不必重复设置,适用于需要动态改变状态的情况
