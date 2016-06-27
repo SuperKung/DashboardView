@@ -61,6 +61,7 @@ public class DashboardView extends View {
     private int mMinRingRadius ; //中心圆环的半径
 
     private Context mContext;
+    private int mWidth , mHight;
     float percent ;
     float oldPercent = 0f ;
     private ValueAnimator valueAnimator;
@@ -79,7 +80,6 @@ public class DashboardView extends View {
 
     public DashboardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        //这里必须在构造器里获取
         dashboardViewattr = new DashboardViewAttr(context, attrs, defStyleAttr);
         init(context);
     }
@@ -162,17 +162,19 @@ public class DashboardView extends View {
         initShader();
     }
 
+
+
     private void initShader() {
         if (startColor != 0 && endColor != 0) {
-            LinearGradient shader = new LinearGradient(- getWidth() / 2 + OFFSET, - getHeight() /2 +OFFSET,
-                    getWidth() / 2 - OFFSET, getHeight()/2 -OFFSET,
+            LinearGradient shader = new LinearGradient(- mWidth / 2 + OFFSET, - mHight /2 +OFFSET,
+                    mWidth / 2 - OFFSET, mHight/2 -OFFSET,
                     endColor,startColor,  Shader.TileMode.CLAMP);
             paintProgress.setShader(shader);
         }
     }
 
     private void initAttr() {
-        mMinCircleRadius = getWidth() / 15 ;
+        mMinCircleRadius = mWidth / 15 ;
         mTikeCount = dashboardViewattr.getmTikeCount();
         mTextSize = dashboardViewattr.getmTextSize();
         mTextColor = dashboardViewattr.getTextColor();
@@ -198,7 +200,12 @@ public class DashboardView extends View {
 //            setLayerType(View.LAYER_TYPE_HARDWARE, null);
 //        }
     }
-
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mWidth = getWidth();
+        mHight = getHeight();
+    }
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int realWidth = startMeasure(widthMeasureSpec);
@@ -224,7 +231,7 @@ public class DashboardView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.percent = percent / 100f;
-        canvas.translate(getWidth()/2,getHeight()/2);//移动坐标原点到中心
+        canvas.translate(mWidth/2,mHight/2);//移动坐标原点到中心
         //背景
         drawBackground(canvas);
         //表盘
@@ -232,7 +239,7 @@ public class DashboardView extends View {
         //绘制指针和进度弧
         drawPointerAndProgress(canvas, percent);
         //绘制矩形和文字
-        drawerRecAndText(canvas, percent);
+        drawText(canvas, percent);
 
     }
 
@@ -251,7 +258,7 @@ public class DashboardView extends View {
         drawInPoint(canvas);
     }
 
-    private void drawerRecAndText(Canvas canvas, float percent) {
+    private void drawText(Canvas canvas, float percent) {
         float length ;
         paintText.setTextSize(mTextSize);
         length = paintText.measureText(mText);
@@ -264,7 +271,7 @@ public class DashboardView extends View {
     }
 
     private void drawerPointer(Canvas canvas, float percent) {
-        mMinCircleRadius = getWidth() / 15 ;
+        mMinCircleRadius = mWidth / 15 ;
         rectF1 = new RectF( - mMinCircleRadius / 2, - mMinCircleRadius / 2, mMinCircleRadius / 2 ,  mMinCircleRadius / 2);
         canvas.save();
         float angel = DURING_ARC * (percent - 0.5f) - 180 ;
@@ -272,13 +279,13 @@ public class DashboardView extends View {
         Path pathPointerRight = new Path();
         pathPointerRight.moveTo(0,  mMinCircleRadius / 2);
         pathPointerRight.arcTo(rectF1,270,-90);
-        pathPointerRight.lineTo(0, getHeight() / 2  - OFFSET- progressHeight);
+        pathPointerRight.lineTo(0, mHight / 2  - OFFSET- progressHeight);
         pathPointerRight.lineTo(0,  mMinCircleRadius / 2);
         pathPointerRight.close();
         Path pathPointerLeft = new Path();
         pathPointerLeft.moveTo( 0,  mMinCircleRadius / 2);
         pathPointerLeft.arcTo(rectF1,270,90);
-        pathPointerLeft.lineTo(0, getHeight()/2  - OFFSET- progressHeight);
+        pathPointerLeft.lineTo(0, mHight/2  - OFFSET- progressHeight);
         pathPointerLeft.lineTo(0,  mMinCircleRadius / 2);
         pathPointerLeft.close();
         Path pathCircle = new Path();
@@ -293,7 +300,7 @@ public class DashboardView extends View {
     }
 
     private void drawInPoint(Canvas canvas) {
-        mMinCircleRadius = getWidth() / 15 ;
+        mMinCircleRadius = mWidth / 15 ;
         mMinRingRadius = mMinCircleRadius *2 + mMinCircleRadius / 20;
         paintCenterRingPointer.setStrokeWidth(mMinCircleRadius);
         canvas.drawCircle(0, 0, mMinCircleRadius, paintCenterCirclePointer);//中心圆点
@@ -305,7 +312,7 @@ public class DashboardView extends View {
     private void drawerNum(Canvas canvas) {
         canvas.save(); //记录画布状态
         canvas.rotate(-(180 - START_ARC + 90), 0, 0);
-        int numY = -getHeight() / 2 + OFFSET + progressHeight;
+        int numY = -mHight / 2 + OFFSET + progressHeight;
         float rAngle = DURING_ARC / mTikeCount;
         for (int i = 0; i < mTikeCount + 1; i++) {
             canvas.save(); //记录画布状态
@@ -323,7 +330,7 @@ public class DashboardView extends View {
     }
 
     private void drawProgress(Canvas canvas, float percent) {
-        rectF2 = new RectF( -getWidth()/2  + OFFSET,  - getHeight() /2 + OFFSET, getWidth()/2  - OFFSET, getHeight()/2 - OFFSET);
+        rectF2 = new RectF( -mWidth/2  + OFFSET,  - mHight /2 + OFFSET, mWidth/2  - OFFSET, mHight/2 - OFFSET);
 
         canvas.drawArc(rectF2, START_ARC, DURING_ARC, false, paintProgressBackground);
         if (percent > 1.0f) {
@@ -337,12 +344,12 @@ public class DashboardView extends View {
     private void drawBackground(Canvas canvas) {
 
         //最外阴影
-        canvas.drawCircle(0, 0, getWidth() / 2 - 2, paintOutCircle);
+        canvas.drawCircle(0, 0, mWidth / 2 - 2, paintOutCircle);
         canvas.save();
         //背景
         if (backgroundColor != 0) {
             paintBackground.setColor(backgroundColor);
-            canvas.drawCircle(0, 0,getWidth() / 2  -4, paintBackground);
+            canvas.drawCircle(0, 0,mWidth / 2  -4, paintBackground);
         }
     }
 
@@ -359,11 +366,9 @@ public class DashboardView extends View {
         if (valueAnimator !=null &&valueAnimator.isRunning()){
             valueAnimator.cancel();
         }
-        if (percent > oldPercent) {
-            animatorDuration = (long) (percent - oldPercent) * 20;
-        } else {
-            animatorDuration = (long) (oldPercent - percent) * 20;
-        }
+
+        animatorDuration = (long) Math.abs(percent - oldPercent) * 20;
+
         valueAnimator = ValueAnimator.ofFloat(oldPercent,percent).setDuration(animatorDuration);
         valueAnimator.setInterpolator(interpolator);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {

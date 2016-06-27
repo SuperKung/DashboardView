@@ -92,6 +92,7 @@ public class DashboardViewAttr {
     public String getUnit() {
         return unit;
     }
+
     public int getTextColor() {
         return textColor;
     }
