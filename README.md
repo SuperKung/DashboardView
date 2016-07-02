@@ -8,7 +8,7 @@ Android 自定义View 仪表盘
 ###gradle
 
 ```Groovy
-compile 'com.superkung:dashboard-view:1.1.0'
+compile 'com.superkung:dashboard-view:1.1.1'
 ```
 ###xml
 ```xml
