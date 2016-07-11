@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Example</string>
+    <string-array name="meter">
+        <item>10KB</item>
+        <item>100KB</item>
+        <item>500KB</item>
+        <item>1M</item>
+        <item>2M</item>
+        <item>5M</item>
+    </string-array>
 </resources>

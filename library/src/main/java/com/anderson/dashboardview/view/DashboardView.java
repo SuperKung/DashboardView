@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -35,6 +36,8 @@ public class DashboardView extends View {
     private int mTextSize;//文字的大小
     private int mTextColor;//设置文字颜色
     private int mTikeCount;//刻度的个数
+    private int tikeGap = 3;
+    private CharSequence[] tikeStrArray = null;
     private int startColor;
     private int endColor;
     private int progressColor;
@@ -52,18 +55,19 @@ public class DashboardView extends View {
     private Paint paintPinterCircle;
     private Paint paintText;
     private Paint paintNum;
+    private Paint paintTikeStr;
     private RectF rectF1, rectF2;
 
     private int OFFSET = 30;
     private int START_ARC = 150;
     private int DURING_ARC = 240;
-    private int mMinCircleRadius ; //中心圆点的半径
-    private int mMinRingRadius ; //中心圆环的半径
+    private int mMinCircleRadius; //中心圆点的半径
+    private int mMinRingRadius; //中心圆环的半径
 
     private Context mContext;
-    private int mWidth , mHight;
-    float percent ;
-    float oldPercent = 0f ;
+    private int mWidth, mHight;
+    float percent;
+    float oldPercent = 0f;
     private ValueAnimator valueAnimator;
     private long animatorDuration;
     TimeInterpolator interpolator = new SpringInterpolator();
@@ -157,29 +161,39 @@ public class DashboardView extends View {
         paintPinterCircle.setColor(getResources().getColor(R.color.insideCircle));
         paintPinterCircle.setStyle(Paint.Style.FILL);
         paintPinterCircle.setDither(true);
-
+        paintTikeStr = new Paint();
+        paintTikeStr.setAntiAlias(true);
+        paintTikeStr.setStyle(Paint.Style.FILL);
+        paintTikeStr.setTextAlign(Paint.Align.LEFT);
+        paintTikeStr.setColor(dashboardViewattr.getTikeStrColor());
+        paintTikeStr.setTextSize(dashboardViewattr.getTikeStrSize());
 
         initShader();
     }
 
 
-
     private void initShader() {
         if (startColor != 0 && endColor != 0) {
-            LinearGradient shader = new LinearGradient(- mWidth / 2 + OFFSET, - mHight /2 +OFFSET,
-                    mWidth / 2 - OFFSET, mHight/2 -OFFSET,
-                    endColor,startColor,  Shader.TileMode.CLAMP);
+            LinearGradient shader = new LinearGradient(-mWidth / 2 + OFFSET, -mHight / 2 + OFFSET,
+                    mWidth / 2 - OFFSET, mHight / 2 - OFFSET,
+                    endColor, startColor, Shader.TileMode.CLAMP);
             paintProgress.setShader(shader);
         }
     }
 
     private void initAttr() {
-        mMinCircleRadius = mWidth / 15 ;
+        mMinCircleRadius = mWidth / 15;
         mTikeCount = dashboardViewattr.getmTikeCount();
+        tikeStrArray = dashboardViewattr.getTikeStrArray();
+        if (tikeStrArray != null && tikeStrArray.length != 0) {
+            tikeGap = (mTikeCount / tikeStrArray.length) + 1;
+        } else {
+            tikeStrArray = new String[0];
+        }
         mTextSize = dashboardViewattr.getmTextSize();
         mTextColor = dashboardViewattr.getTextColor();
         mText = dashboardViewattr.getmText();
-        progressHeight = PxUtils.dpToPx(10,mContext);//dashboardViewattr.getProgressHeight();
+        progressHeight = PxUtils.dpToPx(10, mContext);//dashboardViewattr.getProgressHeight();
         unit = dashboardViewattr.getUnit();
         backgroundColor = dashboardViewattr.getBackground();
         startColor = dashboardViewattr.getStartColor();
@@ -193,19 +207,19 @@ public class DashboardView extends View {
             OFFSET = dashboardViewattr.getPadding();
         }
 
-
-
         // 开启硬件加速
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 //            setLayerType(View.LAYER_TYPE_HARDWARE, null);
 //        }
     }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = getWidth();
         mHight = getHeight();
     }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int realWidth = startMeasure(widthMeasureSpec);
@@ -231,7 +245,7 @@ public class DashboardView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.percent = percent / 100f;
-        canvas.translate(mWidth/2,mHight/2);//移动坐标原点到中心
+        canvas.translate(mWidth / 2, mHight / 2);//移动坐标原点到中心
         //背景
         drawBackground(canvas);
         //表盘
@@ -259,39 +273,39 @@ public class DashboardView extends View {
     }
 
     private void drawText(Canvas canvas, float percent) {
-        float length ;
+        float length;
         paintText.setTextSize(mTextSize);
         length = paintText.measureText(mText);
-        canvas.drawText(mText,-length /2, mMinRingRadius*2.0F,  paintText);
+        canvas.drawText(mText, -length / 2, mMinRingRadius * 2.0F, paintText);
         paintText.setTextSize(mTextSize * 1.2f);
         speed = StringUtil.floatFormat(startNum + (maxNum - startNum) * percent) + unit;
         length = paintText.measureText(speed);
-        canvas.drawText(speed, -length /2 , mMinRingRadius*2.5F, paintText);
+        canvas.drawText(speed, -length / 2, mMinRingRadius * 2.5F, paintText);
 
     }
 
     private void drawerPointer(Canvas canvas, float percent) {
-        mMinCircleRadius = mWidth / 15 ;
-        rectF1 = new RectF( - mMinCircleRadius / 2, - mMinCircleRadius / 2, mMinCircleRadius / 2 ,  mMinCircleRadius / 2);
+        mMinCircleRadius = mWidth / 15;
+        rectF1 = new RectF(-mMinCircleRadius / 2, -mMinCircleRadius / 2, mMinCircleRadius / 2, mMinCircleRadius / 2);
         canvas.save();
-        float angel = DURING_ARC * (percent - 0.5f) - 180 ;
+        float angel = DURING_ARC * (percent - 0.5f) - 180;
         canvas.rotate(angel, 0, 0);//指针与外弧边缘持平
         Path pathPointerRight = new Path();
-        pathPointerRight.moveTo(0,  mMinCircleRadius / 2);
-        pathPointerRight.arcTo(rectF1,270,-90);
-        pathPointerRight.lineTo(0, mHight / 2  - OFFSET- progressHeight);
-        pathPointerRight.lineTo(0,  mMinCircleRadius / 2);
+        pathPointerRight.moveTo(0, mMinCircleRadius / 2);
+        pathPointerRight.arcTo(rectF1, 270, -90);
+        pathPointerRight.lineTo(0, mHight / 2 - OFFSET - progressHeight);
+        pathPointerRight.lineTo(0, mMinCircleRadius / 2);
         pathPointerRight.close();
         Path pathPointerLeft = new Path();
-        pathPointerLeft.moveTo( 0,  mMinCircleRadius / 2);
-        pathPointerLeft.arcTo(rectF1,270,90);
-        pathPointerLeft.lineTo(0, mHight/2  - OFFSET- progressHeight);
-        pathPointerLeft.lineTo(0,  mMinCircleRadius / 2);
+        pathPointerLeft.moveTo(0, mMinCircleRadius / 2);
+        pathPointerLeft.arcTo(rectF1, 270, 90);
+        pathPointerLeft.lineTo(0, mHight / 2 - OFFSET - progressHeight);
+        pathPointerLeft.lineTo(0, mMinCircleRadius / 2);
         pathPointerLeft.close();
         Path pathCircle = new Path();
         pathCircle.addCircle(0, 0, mMinCircleRadius / 4, Path.Direction.CW);
 
-        canvas.drawPath(pathPointerLeft,paintPointerLeft);
+        canvas.drawPath(pathPointerLeft, paintPointerLeft);
         canvas.drawPath(pathPointerRight, paintPointerRight);
         canvas.drawPath(pathCircle, paintPinterCircle);
 
@@ -300,8 +314,8 @@ public class DashboardView extends View {
     }
 
     private void drawInPoint(Canvas canvas) {
-        mMinCircleRadius = mWidth / 15 ;
-        mMinRingRadius = mMinCircleRadius *2 + mMinCircleRadius / 20;
+        mMinCircleRadius = mWidth / 15;
+        mMinRingRadius = mMinCircleRadius * 2 + mMinCircleRadius / 20;
         paintCenterRingPointer.setStrokeWidth(mMinCircleRadius);
         canvas.drawCircle(0, 0, mMinCircleRadius, paintCenterCirclePointer);//中心圆点
 
@@ -313,14 +327,20 @@ public class DashboardView extends View {
         canvas.save(); //记录画布状态
         canvas.rotate(-(180 - START_ARC + 90), 0, 0);
         int numY = -mHight / 2 + OFFSET + progressHeight;
-        float rAngle = DURING_ARC / mTikeCount;
+        float rAngle = DURING_ARC / (mTikeCount * 1.0f);
         for (int i = 0; i < mTikeCount + 1; i++) {
             canvas.save(); //记录画布状态
-            canvas.rotate(rAngle * i,0, 0);
-            if (i == 0 || i  % 3 ==0){
-                canvas.drawLine(0 , numY + 5, 0, numY + 25, paintNum);//画长刻度线
-            }else {
-                canvas.drawLine(0 , numY + 5, 0, numY + 15, paintNum);//画短刻度线
+            canvas.rotate(rAngle * i, 0, 0);
+            if (i == 0 || i % tikeGap == 0) {
+                canvas.drawLine(0, numY + 5, 0, numY + 25, paintNum);//画长刻度线
+                if (tikeStrArray.length > (i % tikeGap)) {
+                    String text = tikeStrArray[i / tikeGap].toString();
+                    Paint.FontMetricsInt fontMetrics = paintTikeStr.getFontMetricsInt();
+                    int baseline = ((numY + 35) + (fontMetrics.bottom - fontMetrics.top) / 2);
+                    canvas.drawText(text, -getTextViewLength(paintTikeStr, text) / 2, baseline, paintTikeStr);
+                }
+            } else {
+                canvas.drawLine(0, numY + 5, 0, numY + 15, paintNum);//画短刻度线
             }
 
             canvas.restore();
@@ -329,14 +349,20 @@ public class DashboardView extends View {
 
     }
 
+    private float getTextViewLength(Paint paint, String text) {
+        if (TextUtils.isEmpty(text)) return 0;
+        float textLength = paint.measureText(text);
+        return textLength;
+    }
+
     private void drawProgress(Canvas canvas, float percent) {
-        rectF2 = new RectF( -mWidth/2  + OFFSET,  - mHight /2 + OFFSET, mWidth/2  - OFFSET, mHight/2 - OFFSET);
+        rectF2 = new RectF(-mWidth / 2 + OFFSET, -mHight / 2 + OFFSET, mWidth / 2 - OFFSET, mHight / 2 - OFFSET);
 
         canvas.drawArc(rectF2, START_ARC, DURING_ARC, false, paintProgressBackground);
         if (percent > 1.0f) {
             percent = 1.0f; //限制进度条在弹性的作用下不会超出
         }
-        if (!(percent <= 0.0f )) {
+        if (!(percent <= 0.0f)) {
             canvas.drawArc(rectF2, START_ARC, percent * DURING_ARC, false, paintProgress);
         }
     }
@@ -349,7 +375,7 @@ public class DashboardView extends View {
         //背景
         if (backgroundColor != 0) {
             paintBackground.setColor(backgroundColor);
-            canvas.drawCircle(0, 0,mWidth / 2  -4, paintBackground);
+            canvas.drawCircle(0, 0, mWidth / 2 - 4, paintBackground);
         }
     }
 
@@ -362,14 +388,15 @@ public class DashboardView extends View {
     public void setPercent(int percent) {
         setAnimator(percent);
     }
+
     private void setAnimator(final float percent) {
-        if (valueAnimator !=null &&valueAnimator.isRunning()){
+        if (valueAnimator != null && valueAnimator.isRunning()) {
             valueAnimator.cancel();
         }
 
         animatorDuration = (long) Math.abs(percent - oldPercent) * 20;
 
-        valueAnimator = ValueAnimator.ofFloat(oldPercent,percent).setDuration(animatorDuration);
+        valueAnimator = ValueAnimator.ofFloat(oldPercent, percent).setDuration(animatorDuration);
         valueAnimator.setInterpolator(interpolator);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -428,7 +455,7 @@ public class DashboardView extends View {
      */
     public void setProgressHeight(int dp) {
 
-        progressHeight = PxUtils.dpToPx(dp,mContext);
+        progressHeight = PxUtils.dpToPx(dp, mContext);
         paintProgress.setStrokeWidth(progressHeight);
         paintProgressBackground.setStrokeWidth(progressHeight);
         invalidate();
@@ -451,6 +478,7 @@ public class DashboardView extends View {
     public void setInterpolator(TimeInterpolator interpolator) {
         this.interpolator = interpolator;
     }
+
     /**
      * 设置起始颜色
      *
@@ -460,6 +488,7 @@ public class DashboardView extends View {
         this.startColor = startColor;
         initShader();
     }
+
     /**
      * 设置结束颜色
      *
@@ -469,6 +498,7 @@ public class DashboardView extends View {
         this.endColor = endColor;
         initShader();
     }
+
     /**
      * 设置起始值
      *
@@ -477,6 +507,7 @@ public class DashboardView extends View {
     public void setStartNum(float startNum) {
         this.startNum = startNum;
     }
+
     /**
      * 设置最大值
      *
