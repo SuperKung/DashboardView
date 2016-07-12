@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout android:id="@+id/activity_main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.anderson.dashboardview.view.DashboardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="当前速度"
-        app:Unit="m/s"
         android:id="@+id/dashboardView"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="77dp"/>
+        android:layout_marginTop="20dp"
+        android:text="当前速度"
+        app:unit="m/s"
+        app:progressStrokeWidth="16dp"
+        app:endProgressColor="@color/colorPrimaryDark"
+        app:startProgressColor="@color/colorAccent"
+        app:tikeStrArray="@array/meter"
+        app:tikeStrColor="@color/colorAccent"
+        app:tikeStrSize="10dp" />
 
     <SeekBar
+        android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/seekBar"
-        android:layout_below="@+id/dashboardView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="29dp"/>
+        android:layout_below="@+id/dashboardView"
+        android:layout_marginTop="29dp" />
 </RelativeLayout>
