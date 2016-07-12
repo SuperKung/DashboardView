@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:id="@+id/activity_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,9 +13,12 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="当前速度"
-        app:Unit="m/s"
-        app:tikeCount="25"
+        app:unit="m/s"
+        app:progressStrokeWidth="16dp"
+        app:endProgressColor="@color/colorPrimaryDark"
+        app:startProgressColor="@color/colorAccent"
         app:tikeStrArray="@array/meter"
+        app:tikeStrColor="@color/colorAccent"
         app:tikeStrSize="10dp" />
 
     <SeekBar

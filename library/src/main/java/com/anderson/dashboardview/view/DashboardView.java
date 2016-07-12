@@ -26,7 +26,7 @@ import com.anderson.dashboardview.util.StringUtil;
 public class DashboardView extends View {
 
     private DashboardViewAttr dashboardViewattr;
-    private int progressHeight;//进度弧的宽度
+    private int progressStrokeWidth;//进度弧的宽度
     private String speed = "";//速度显示
     private String unit = "";//显示单位
     private int backgroundColor = 0;//背景颜色
@@ -36,7 +36,7 @@ public class DashboardView extends View {
     private int mTextSize;//文字的大小
     private int mTextColor;//设置文字颜色
     private int mTikeCount;//刻度的个数
-    private int tikeGap = 3;
+    private int tikeGroup = 3;
     private CharSequence[] tikeStrArray = null;
     private int startColor;
     private int endColor;
@@ -111,14 +111,14 @@ public class DashboardView extends View {
         paintBackground.setDither(true);
         paintProgressBackground = new Paint();
         paintProgressBackground.setAntiAlias(true);
-        paintProgressBackground.setStrokeWidth(progressHeight);
+        paintProgressBackground.setStrokeWidth(progressStrokeWidth);
         paintProgressBackground.setStyle(Paint.Style.STROKE);
         paintProgressBackground.setStrokeCap(Paint.Cap.ROUND);
         paintProgressBackground.setColor(getResources().getColor(R.color.shadow));
         paintProgressBackground.setDither(true);
         paintProgress = new Paint();
         paintProgress.setAntiAlias(true);
-        paintProgress.setStrokeWidth(progressHeight);
+        paintProgress.setStrokeWidth(progressStrokeWidth);
         paintProgress.setStyle(Paint.Style.STROKE);
         paintProgress.setStrokeCap(Paint.Cap.ROUND);
         paintProgress.setColor(progressColor);
@@ -168,14 +168,13 @@ public class DashboardView extends View {
         paintTikeStr.setColor(dashboardViewattr.getTikeStrColor());
         paintTikeStr.setTextSize(dashboardViewattr.getTikeStrSize());
 
-        initShader();
     }
 
 
     private void initShader() {
+        updateOval();
         if (startColor != 0 && endColor != 0) {
-            LinearGradient shader = new LinearGradient(-mWidth / 2 + OFFSET, -mHight / 2 + OFFSET,
-                    mWidth / 2 - OFFSET, mHight / 2 - OFFSET,
+            LinearGradient shader = new LinearGradient(rectF2.left, rectF2.top, rectF2.right, rectF2.bottom,
                     endColor, startColor, Shader.TileMode.CLAMP);
             paintProgress.setShader(shader);
         }
@@ -183,17 +182,19 @@ public class DashboardView extends View {
 
     private void initAttr() {
         mMinCircleRadius = mWidth / 15;
-        mTikeCount = dashboardViewattr.getmTikeCount();
         tikeStrArray = dashboardViewattr.getTikeStrArray();
+        tikeGroup = 5; // 默认1个长刻度间隔4个短刻度，加起来一组5
         if (tikeStrArray != null && tikeStrArray.length != 0) {
-            tikeGap = (mTikeCount / tikeStrArray.length) + 1;
+            //根据需要绘制的刻度数组大小计算刻度总数
+            mTikeCount = (tikeStrArray.length - 1) * tikeGroup + 1;
         } else {
             tikeStrArray = new String[0];
+            mTikeCount = 36;
         }
         mTextSize = dashboardViewattr.getmTextSize();
         mTextColor = dashboardViewattr.getTextColor();
         mText = dashboardViewattr.getmText();
-        progressHeight = PxUtils.dpToPx(10, mContext);//dashboardViewattr.getProgressHeight();
+        progressStrokeWidth = dashboardViewattr.getProgressStrokeWidth();
         unit = dashboardViewattr.getUnit();
         backgroundColor = dashboardViewattr.getBackground();
         startColor = dashboardViewattr.getStartColor();
@@ -202,7 +203,7 @@ public class DashboardView extends View {
         maxNum = dashboardViewattr.getMaxNumber();
         progressColor = dashboardViewattr.getProgressColor();
         if (dashboardViewattr.getPadding() == 0) {
-            OFFSET = progressHeight + 10;
+            OFFSET = progressStrokeWidth + 10;
         } else {
             OFFSET = dashboardViewattr.getPadding();
         }
@@ -218,6 +219,7 @@ public class DashboardView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         mWidth = getWidth();
         mHight = getHeight();
+        initShader();
     }
 
     @Override
@@ -273,6 +275,7 @@ public class DashboardView extends View {
     }
 
     private void drawText(Canvas canvas, float percent) {
+        if (TextUtils.isEmpty(unit)) return;
         float length;
         paintText.setTextSize(mTextSize);
         length = paintText.measureText(mText);
@@ -293,13 +296,13 @@ public class DashboardView extends View {
         Path pathPointerRight = new Path();
         pathPointerRight.moveTo(0, mMinCircleRadius / 2);
         pathPointerRight.arcTo(rectF1, 270, -90);
-        pathPointerRight.lineTo(0, mHight / 2 - OFFSET - progressHeight);
+        pathPointerRight.lineTo(0, mHight / 2 - OFFSET - progressStrokeWidth);
         pathPointerRight.lineTo(0, mMinCircleRadius / 2);
         pathPointerRight.close();
         Path pathPointerLeft = new Path();
         pathPointerLeft.moveTo(0, mMinCircleRadius / 2);
         pathPointerLeft.arcTo(rectF1, 270, 90);
-        pathPointerLeft.lineTo(0, mHight / 2 - OFFSET - progressHeight);
+        pathPointerLeft.lineTo(0, mHight / 2 - OFFSET - progressStrokeWidth);
         pathPointerLeft.lineTo(0, mMinCircleRadius / 2);
         pathPointerLeft.close();
         Path pathCircle = new Path();
@@ -326,17 +329,17 @@ public class DashboardView extends View {
     private void drawerNum(Canvas canvas) {
         canvas.save(); //记录画布状态
         canvas.rotate(-(180 - START_ARC + 90), 0, 0);
-        int numY = -mHight / 2 + OFFSET + progressHeight;
-        float rAngle = DURING_ARC / (mTikeCount * 1.0f);
-        for (int i = 0; i < mTikeCount + 1; i++) {
+        int numY = -mHight / 2 + OFFSET + progressStrokeWidth;
+        float rAngle = DURING_ARC / ((mTikeCount - 1) * 1.0f); //n根线，只需要n-1个区间
+        for (int i = 0; i < mTikeCount; i++) {
             canvas.save(); //记录画布状态
             canvas.rotate(rAngle * i, 0, 0);
-            if (i == 0 || i % tikeGap == 0) {
+            if (i == 0 || i % tikeGroup == 0) {
                 canvas.drawLine(0, numY + 5, 0, numY + 25, paintNum);//画长刻度线
-                if (tikeStrArray.length > (i % tikeGap)) {
-                    String text = tikeStrArray[i / tikeGap].toString();
+                if (tikeStrArray.length > (i % tikeGroup)) {
+                    String text = tikeStrArray[i / tikeGroup].toString();
                     Paint.FontMetricsInt fontMetrics = paintTikeStr.getFontMetricsInt();
-                    int baseline = ((numY + 35) + (fontMetrics.bottom - fontMetrics.top) / 2);
+                    int baseline = ((numY + 40) + (fontMetrics.bottom - fontMetrics.top) / 2);
                     canvas.drawText(text, -getTextViewLength(paintTikeStr, text) / 2, baseline, paintTikeStr);
                 }
             } else {
@@ -356,8 +359,6 @@ public class DashboardView extends View {
     }
 
     private void drawProgress(Canvas canvas, float percent) {
-        rectF2 = new RectF(-mWidth / 2 + OFFSET, -mHight / 2 + OFFSET, mWidth / 2 - OFFSET, mHight / 2 - OFFSET);
-
         canvas.drawArc(rectF2, START_ARC, DURING_ARC, false, paintProgressBackground);
         if (percent > 1.0f) {
             percent = 1.0f; //限制进度条在弹性的作用下不会超出
@@ -365,6 +366,12 @@ public class DashboardView extends View {
         if (!(percent <= 0.0f)) {
             canvas.drawArc(rectF2, START_ARC, percent * DURING_ARC, false, paintProgress);
         }
+    }
+
+    private void updateOval() {
+        rectF2 = new RectF((-mWidth / 2) + OFFSET + getPaddingLeft(), getPaddingTop() - (mHight / 2) + OFFSET,
+                (mWidth / 2) - getPaddingRight() - OFFSET,
+                (mWidth / 2) - getPaddingBottom() - OFFSET);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -382,7 +389,6 @@ public class DashboardView extends View {
 
     /**
      * 设置百分比
-     *
      * @param percent
      */
     public void setPercent(int percent) {
@@ -420,7 +426,6 @@ public class DashboardView extends View {
 
     /**
      * 设置文字
-     *
      * @param text
      */
     public void setText(String text) {
@@ -431,7 +436,6 @@ public class DashboardView extends View {
 
     /**
      * 设置文字大小
-     *
      * @param size
      */
     public void setTextSize(int size) {
@@ -441,7 +445,6 @@ public class DashboardView extends View {
 
     /**
      * 设置字体颜色
-     *
      * @param mTextColor
      */
     public void setTextColor(int mTextColor) {
@@ -450,20 +453,18 @@ public class DashboardView extends View {
 
     /**
      * 设置弧的高度
-     *
      * @param dp
      */
-    public void setProgressHeight(int dp) {
+    public void setProgressStroke(int dp) {
 
-        progressHeight = PxUtils.dpToPx(dp, mContext);
-        paintProgress.setStrokeWidth(progressHeight);
-        paintProgressBackground.setStrokeWidth(progressHeight);
+        progressStrokeWidth = PxUtils.dpToPx(dp, mContext);
+        paintProgress.setStrokeWidth(progressStrokeWidth);
+        paintProgressBackground.setStrokeWidth(progressStrokeWidth);
         invalidate();
     }
 
     /**
      * 设置单位
-     *
      * @param unit
      */
     public void setUnit(String unit) {
@@ -472,7 +473,6 @@ public class DashboardView extends View {
 
     /**
      * 设置插值器
-     *
      * @param interpolator
      */
     public void setInterpolator(TimeInterpolator interpolator) {
@@ -481,7 +481,6 @@ public class DashboardView extends View {
 
     /**
      * 设置起始颜色
-     *
      * @param startColor
      */
     public void setStartColor(int startColor) {
@@ -491,7 +490,6 @@ public class DashboardView extends View {
 
     /**
      * 设置结束颜色
-     *
      * @param endColor
      */
     public void setEndColor(int endColor) {
@@ -501,7 +499,6 @@ public class DashboardView extends View {
 
     /**
      * 设置起始值
-     *
      * @param startNum
      */
     public void setStartNum(float startNum) {
@@ -510,7 +507,6 @@ public class DashboardView extends View {
 
     /**
      * 设置最大值
-     *
      * @param maxNum
      */
     public void setMaxNum(float maxNum) {

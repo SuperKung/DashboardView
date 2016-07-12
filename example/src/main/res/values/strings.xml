@@ -7,5 +7,6 @@
         <item>1M</item>
         <item>2M</item>
         <item>5M</item>
+        <item>10M</item>
     </string-array>
 </resources>
