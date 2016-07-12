@@ -14,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dashboardView = (DashboardView) findViewById(R.id.dashboardView);
+//        dashboardView.setStartColor(getResources().getColor(R.color.GREEN));
+//        dashboardView.setEndColor(getResources().getColor(R.color.RED));
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

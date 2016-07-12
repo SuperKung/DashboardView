@@ -27,7 +27,7 @@ publish {
     userOrg = 'superkung'
     groupId = 'com.superkung'
     artifactId = 'dashboard-view'
-    publishVersion = '1.1.0'
+    publishVersion = '1.1.1'
     desc = 'Oh hi, this is a nice description for a project, right?'
     website = 'https://github.com/SuperKung'
 }

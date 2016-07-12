@@ -1,8 +1,6 @@
 package com.anderson.dashboardview.Interpolator;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.view.animation.BaseInterpolator;
+
 import android.view.animation.Interpolator;
 
 /**
