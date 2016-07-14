@@ -27,7 +27,7 @@ public class DashboardViewAttr {
     private CharSequence[] tikeStrArray;
     private int tikeStrColor;
     private float tikeStrSize;
-
+    private int circleColor;
     public DashboardViewAttr(Context context, AttributeSet attrs, int defStyleAttr) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.DashboardView, defStyleAttr, 0);
         mTextSize = ta.getDimensionPixelSize(PxUtils.spToPx(R.styleable.DashboardView_android_textSize, context), 24);
@@ -46,7 +46,12 @@ public class DashboardViewAttr {
 
         tikeStrColor = ta.getColor(R.styleable.DashboardView_tikeStrColor, context.getResources().getColor(android.R.color.black));
         tikeStrSize = ta.getDimension(R.styleable.DashboardView_tikeStrSize, 10);
+        circleColor = ta.getColor(R.styleable.DashboardView_centerCircleColor, context.getResources().getColor(R.color.outsideBlue));
         ta.recycle();
+    }
+
+    public int getCircleColor() {
+        return circleColor;
     }
 
     public int getProgressColor() {

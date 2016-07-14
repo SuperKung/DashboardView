@@ -6,9 +6,12 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.text.TextUtils;
@@ -41,7 +44,7 @@ public class DashboardView extends View {
     private int startColor;
     private int endColor;
     private int progressColor;
-
+    private int circleColor;
 
     //画笔
     private Paint paintBackground;
@@ -125,12 +128,11 @@ public class DashboardView extends View {
         paintProgress.setDither(true);
         paintCenterCirclePointer = new Paint();
         paintCenterCirclePointer.setAntiAlias(true);
-        paintCenterCirclePointer.setColor(getResources().getColor(R.color.insideBlue));
         paintCenterCirclePointer.setStyle(Paint.Style.FILL);//实心画笔
         paintCenterCirclePointer.setDither(true);
         paintCenterRingPointer = new Paint();
         paintCenterRingPointer.setAntiAlias(true);
-        paintCenterRingPointer.setColor(getResources().getColor(R.color.outsideBlue));
+        paintCenterRingPointer.setColor(circleColor);
         paintCenterRingPointer.setStrokeWidth(mMinCircleRadius);
         paintCenterRingPointer.setStyle(Paint.Style.STROKE);//空心画笔
         paintCenterRingPointer.setDither(true);
@@ -142,7 +144,7 @@ public class DashboardView extends View {
         paintText.setDither(true);
         paintNum = new Paint();
         paintNum.setAntiAlias(true);
-        paintNum.setColor(getResources().getColor(R.color.shadow));
+        paintNum.setColor(getResources().getColor(R.color.scale));
         paintNum.setStrokeWidth(2);
         paintNum.setStyle(Paint.Style.FILL);
         paintNum.setDither(true);
@@ -202,6 +204,7 @@ public class DashboardView extends View {
         startNum = dashboardViewattr.getStartNumber();
         maxNum = dashboardViewattr.getMaxNumber();
         progressColor = dashboardViewattr.getProgressColor();
+        circleColor = dashboardViewattr.getCircleColor();
         if (dashboardViewattr.getPadding() == 0) {
             OFFSET = progressStrokeWidth + 10;
         } else {
@@ -320,7 +323,11 @@ public class DashboardView extends View {
         mMinCircleRadius = mWidth / 15;
         mMinRingRadius = mMinCircleRadius * 2 + mMinCircleRadius / 20;
         paintCenterRingPointer.setStrokeWidth(mMinCircleRadius);
-        canvas.drawCircle(0, 0, mMinCircleRadius, paintCenterCirclePointer);//中心圆点
+
+        paintCenterCirclePointer.setColor(circleColor);
+        canvas.drawCircle(0, 0, mMinCircleRadius, paintCenterCirclePointer);
+        paintCenterCirclePointer.setColor(getResources().getColor(R.color.scale));
+        canvas.drawCircle(0, 0, mMinCircleRadius, paintCenterCirclePointer); //中心圆点
 
         canvas.drawCircle(0, 0, mMinRingRadius, paintCenterRingPointer);//中心小圆环
 

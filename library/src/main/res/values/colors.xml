@@ -17,6 +17,7 @@
     <color name="slategrey">#ff708090</color>
     <color name="textColor">#666666</color>
     <color name="shadow">#dfdfdf</color>
+    <color name="scale">#58000000</color>
     <color name="leftRight">#e1dcd6</color>
     <color name="rightRight">#f4efe9</color>
     <color name="outsideBlue">#2690f8</color>

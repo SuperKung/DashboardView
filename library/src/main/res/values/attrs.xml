@@ -3,7 +3,6 @@
 
 
     <declare-styleable name="DashboardView">
-        <attr name="arcColor" format="color"/>
         <attr name="padding" format="dimension"/>
         <attr name="progressStrokeWidth" format="dimension"/>
         <attr name="android:text"/>
@@ -19,6 +18,7 @@
         <attr name="tikeStrArray" format="reference"/>
         <attr name="tikeStrSize" format="dimension"/>
         <attr name="tikeStrColor" format="color"/>
+        <attr name="centerCircleColor" format="color"/>
     </declare-styleable>
 
 </resources>

@@ -19,7 +19,10 @@
         app:startProgressColor="@color/colorAccent"
         app:tikeStrArray="@array/meter"
         app:tikeStrColor="@color/colorAccent"
-        app:tikeStrSize="10dp" />
+        app:tikeStrSize="10dp"
+        app:startNumber="100"
+        app:maxNumber="1900"
+        app:centerCircleColor="@color/colorPrimary"/>
 
     <SeekBar
         android:id="@+id/seekBar"
