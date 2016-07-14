@@ -3,6 +3,8 @@ Android 自定义View 仪表盘
 
 ![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/dashboard-view.gif)
 
+![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/Screenshot2.png)
+
 ##HOW TO USE
 
 ###gradle
@@ -27,6 +29,13 @@ compile 'com.superkung:dashboard-view:1.1.1'
   app:progressColor
   app:startProgressColor
   app:endProgressColor
+  app:progressStrokeWidth
+  app:tikeStrArray
+  app:tikeStrColor
+  app:tikeStrSize
+  app:startNumber
+  app:maxNumber
+  app:centerCircleColor
 ```
 ###java
 ```java
