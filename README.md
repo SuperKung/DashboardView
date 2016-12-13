@@ -1,16 +1,14 @@
 # DashboardView
 Android 自定义View 仪表盘
 
-![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/dashboard-view.gif)
-
-![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/Screenshot2.png)
+![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/Dashboard.gif)
 
 ##HOW TO USE
 
 ###gradle
 
 ```Groovy
-compile 'com.superkung:dashboard-view:1.1.1'
+compile 'com.superkung:dashboard-view:1.2.0'
 ```
 ###xml
 ```xml
