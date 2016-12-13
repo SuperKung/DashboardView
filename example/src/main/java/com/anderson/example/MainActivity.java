@@ -1,7 +1,9 @@
 package com.anderson.example;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.SeekBar;
 
 import com.anderson.dashboardview.view.DashboardView;
@@ -33,5 +35,25 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, TestActivity.class);
+                startActivity(i);
+            }
+        });
+        findViewById(R.id.visibility).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dashboardView.getVisibility() == View.VISIBLE) {
+                    dashboardView.setVisibility(View.GONE);
+                } else {
+                    dashboardView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
     }
+
+
 }

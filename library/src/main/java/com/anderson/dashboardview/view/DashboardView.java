@@ -8,14 +8,17 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.SweepGradient;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.anderson.dashboardview.Interpolator.SpringInterpolator;
@@ -176,8 +179,13 @@ public class DashboardView extends View {
     private void initShader() {
         updateOval();
         if (startColor != 0 && endColor != 0) {
-            LinearGradient shader = new LinearGradient(rectF2.left, rectF2.top, rectF2.right, rectF2.bottom,
-                    endColor, startColor, Shader.TileMode.CLAMP);
+//            LinearGradient shader = new LinearGradient(rectF2.left, rectF2.top, rectF2.right, rectF2.bottom,
+//                    endColor, startColor, Shader.TileMode.CLAMP);
+            SweepGradient shader = new SweepGradient(0, 0, new int[]{startColor, endColor}, null);
+            float rotate = 90f;
+            Matrix gradientMatrix = new Matrix();
+            gradientMatrix.preRotate(rotate, 0,0);
+            shader.setLocalMatrix(gradientMatrix);
             paintProgress.setShader(shader);
         }
     }
@@ -392,7 +400,12 @@ public class DashboardView extends View {
             canvas.drawCircle(0, 0, mWidth / 2 - 4, paintBackground);
         }
     }
-
+    //每次view被隐藏在显示出来之后percent都会变成一个0.000000x的值，原因未知，暂时采取暴力方式处理。
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        percent = oldPercent;
+    }
 
     /**
      * 设置百分比
@@ -425,6 +438,16 @@ public class DashboardView extends View {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 oldPercent = percent;
+
+                //防止因为插值器误差产生越界
+                if (DashboardView.this.percent < 0.0) {
+                    DashboardView.this.percent = 0.0f;
+                    invalidate();
+                }
+                if (DashboardView.this.percent > 100.0) {
+                    DashboardView.this.percent = 100.0f;
+                    invalidate();
+                }
             }
         });
         valueAnimator.start();

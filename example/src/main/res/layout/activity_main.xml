@@ -24,12 +24,25 @@
         app:maxNumber="1900"
         app:centerCircleColor="@color/colorPrimary"/>
 
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="next"
+        android:layout_alignParentBottom="true"/>
+    <Button
+        android:id="@+id/visibility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="visibility"
+        android:layout_above="@id/next"/>
     <SeekBar
         android:id="@+id/seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/dashboardView"
-        android:layout_marginTop="29dp" />
+        android:layout_above="@id/visibility"
+        android:layout_marginBottom="25dp" />
 </RelativeLayout>

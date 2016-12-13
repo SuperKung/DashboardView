@@ -27,8 +27,8 @@ publish {
     userOrg = 'superkung'
     groupId = 'com.superkung'
     artifactId = 'dashboard-view'
-    publishVersion = '1.1.1'
-    desc = 'Oh hi, this is a nice description for a project, right?'
+    publishVersion = '1.2.0'
+    desc = 'DashbordView for Android'
     website = 'https://github.com/SuperKung'
 }
 dependencies {
