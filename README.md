@@ -37,7 +37,7 @@ compile 'com.superkung:dashboard-view:1.2.0'
 ```
 ###java
 ```java
-setPercent(int percent);//核心方法，percent = 1~100
+setPercent(int percent);//核心方法，percent = 0~100
 //以下方法都可有可无，如果在xml中设置了则不必重复设置,适用于需要动态改变状态的情况
 setText(String text);
 setTextSize(int size);
