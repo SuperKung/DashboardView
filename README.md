@@ -1,4 +1,6 @@
 # DashboardView
+[![](https://jitpack.io/v/SuperKung/DashboardView.svg)](https://jitpack.io/#SuperKung/DashboardView)
+
 Android 自定义View 仪表盘
 
 ![DashboardView](https://github.com/SuperKung/DashboardView/blob/master/Dashboard.gif)
@@ -7,8 +9,19 @@ Android 自定义View 仪表盘
 
 ###gradle
 
+
+root build.gradle:
 ```Groovy
-compile 'com.superkung:dashboard-view:1.2.0' //如果不可用，可能是审核暂未通过，暂时用1.1.1版本
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+moudle build.gradle:
+```Groovy
+compile 'com.superkung:dashboard-view:1.2.0' 
 ```
 ###xml
 ```xml
