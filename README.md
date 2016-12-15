@@ -21,7 +21,7 @@ allprojects {
 ```
 moudle build.gradle:
 ```Groovy
-compile 'com.superkung:dashboard-view:1.2.0' 
+compile 'com.superkung:dashboard-view:1.2.1' 
 ```
 ###xml
 ```xml
